@@ -1,6 +1,6 @@
 "use client";
 import ErrorAlert from "@/app/components/ErrorAlert";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
