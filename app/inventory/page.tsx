@@ -1,6 +1,8 @@
 function InventoryPage() {
     return (
-        <>INVENTORY</>
+        <div className="w-full">
+            <div className="text-lg font-semibold">Inventory</div>
+        </div>
     )
 }
 

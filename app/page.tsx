@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <>
-      <div>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio dolor nam veritatis odit! Tenetur odio nisi vero laborum minima consectetur hic esse ad dolores, assumenda itaque magni iste eveniet quas.</div>
-    </>
+    <div className="w-full">
+      <div className="text-lg font-semibold">Dashboard</div>
+    </div>
   );
 }

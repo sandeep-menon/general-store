@@ -1,6 +1,8 @@
 function OrdersPage() {
     return (
-        <>ORDERS</>
+        <div className="w-full">
+            <div className="text-lg font-semibold">Orders</div>
+        </div>
     )
 }
 
