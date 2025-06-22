@@ -21,3 +21,10 @@ model Customer {
   email     String   @unique @db.VarChar(255)
   created   DateTime @default(now())
 }
+
+model Product {
+  id              String @id @default(uuid())
+  name            String @unique @db.VarChar(127)
+  description     String @db.VarChar(255)
+  quantityInStock Int    @default(0)
+}
