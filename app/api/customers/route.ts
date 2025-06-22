@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/app/generated/prisma";
+import { PrismaClient, Prisma } from "@/app/generated/prisma";
 import { createCustomerSchema } from "../../ValidationSchemas";
 
 const prisma = new PrismaClient();
@@ -34,16 +34,35 @@ export async function GET(request : NextRequest) {
 
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
+    const search = searchParams.get("search")?.trim() || "";
     const skip = (page - 1) * limit;
+
+    const tokens = search
+        .split(" ")
+        .filter(Boolean)
+        .map((token) => token.toLowerCase());
+
+    const where = tokens.length
+        ? {
+              AND: tokens.map((token) => ({
+                  OR: [
+                      { firstName: { contains: token, mode: Prisma.QueryMode.insensitive } },
+                      { lastName: { contains: token, mode: Prisma.QueryMode.insensitive } },
+                      { email: { contains: token, mode: Prisma.QueryMode.insensitive } },
+                  ],
+              })),
+          }
+        : {};
 
     try {
         const [customers, total] = await Promise.all([
             prisma.customer.findMany({
+                where,
                 skip,
                 take: limit,
                 orderBy: { created: "desc"}
             }),
-            prisma.customer.count()
+            prisma.customer.count({ where })
         ]);
 
         return NextResponse.json({

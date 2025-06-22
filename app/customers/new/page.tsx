@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createCustomerSchema } from "@/app/ValidationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Link from "next/link";
 
 type CustomerForm = z.infer<typeof createCustomerSchema>;
 
@@ -54,7 +55,10 @@ export default function NewCustomerPage() {
                         <input type="text" className="input w-84 lg:w-96" placeholder="e.g. john@doe.com" {...register("email")} />
                         {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
                     </fieldset>
-                    <button className={`btn btn-primary my-2 ${isSubmitting ? "loading": ""}`}>Save</button>
+                    <div className="flex justify-around items-center">
+                        <button className={`btn btn-primary my-2 ${isSubmitting ? "loading" : ""}`}>Save</button>
+                        <Link href="/customers" className={`btn btn-default my-2`}>Cancel</Link>
+                    </div>
                 </form>
             </div>
         </div>

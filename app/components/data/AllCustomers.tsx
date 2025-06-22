@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import DataLoading from "./DataLoading";
+import { Edit2, Search } from "lucide-react";
 
 interface CustomerData {
     id: string;
@@ -16,11 +17,28 @@ export default function AllCustomers() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [customers, setCustomers] = useState<CustomerData[]>([]);
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 500);
+
+        return () => clearTimeout(handler);
+    }, [search]);
+
     useEffect(() => {
         const fetchCustomers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`/api/customers/?page=${page}`);
+                const response = await axios.get(`/api/customers`, {
+                    params: {
+                        page,
+                        search: debouncedSearch
+                    }
+                });
                 setCustomers(response.data.data);
                 setPage(response.data.meta.page);
                 setTotalPages(response.data.meta.totalPages);
@@ -31,7 +49,7 @@ export default function AllCustomers() {
             }
         };
         fetchCustomers();
-    }, [page]);
+    }, [page, debouncedSearch]);
 
     const previousPage = () => {
         setPage(page - 1);
@@ -42,6 +60,12 @@ export default function AllCustomers() {
     }
     return (
         <div className="flex flex-col gap-4 ">
+            <div>
+                <label className="input">
+                    <Search />
+                    <input type="search" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
+                </label>
+            </div>
             <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
                 <table className="table">
                     <thead>
@@ -49,15 +73,17 @@ export default function AllCustomers() {
                             <th>First name</th>
                             <th>Last name</th>
                             <th>Email address</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading && <tr><td colSpan={3}><DataLoading /></td></tr>}
+                        {loading && <tr><td colSpan={4}><DataLoading /></td></tr>}
                         {!loading && customers.map((customer) => (
                             <tr className="hover:bg-base-200" key={customer.id}>
                                 <td>{customer.firstName}</td>
                                 <td>{customer.lastName}</td>
                                 <td>{customer.email}</td>
+                                <td><button className="btn btn-square btn-sm"><Edit2 /></button></td>
                             </tr>
                         ))}
                     </tbody>
