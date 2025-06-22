@@ -27,4 +27,5 @@ model Product {
   name            String @unique @db.VarChar(127)
   description     String @db.VarChar(255)
   quantityInStock Int    @default(0)
+  price           Float  @default(0.00)
 }
